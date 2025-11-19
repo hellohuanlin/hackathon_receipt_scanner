@@ -8,7 +8,7 @@ class MockReceiptScannerPlatform
     with MockPlatformInterfaceMixin
     implements ReceiptScannerPlatform {
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
+  Future<double?> scanReceipt() => Future.value(42.99);
 }
 
 void main() {
@@ -18,11 +18,11 @@ void main() {
     expect(initialPlatform, isInstanceOf<MethodChannelReceiptScanner>());
   });
 
-  test('getPlatformVersion', () async {
+  test('scanReceipt', () async {
     ReceiptScanner receiptScannerPlugin = ReceiptScanner();
     MockReceiptScannerPlatform fakePlatform = MockReceiptScannerPlatform();
     ReceiptScannerPlatform.instance = fakePlatform;
 
-    expect(await receiptScannerPlugin.getPlatformVersion(), '42');
+    expect(await receiptScannerPlugin.scanReceipt(), 42.99);
   });
 }

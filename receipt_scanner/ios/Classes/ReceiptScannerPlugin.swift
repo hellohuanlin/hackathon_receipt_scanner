@@ -19,11 +19,9 @@ public class ReceiptScannerPlugin: NSObject, FlutterPlugin {
   
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
-    case "getPlatformVersion":
-      DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-        self.presentScanView { amount in
-          result("amount is: \(amount)")
-        }
+    case "scanReceipt":
+      presentScanView { amount in
+        result(NSNumber(value: NSDecimalNumber(decimal: amount).doubleValue))
       }
     default:
       result(FlutterMethodNotImplemented)

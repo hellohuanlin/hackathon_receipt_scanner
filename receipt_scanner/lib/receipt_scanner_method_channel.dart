@@ -10,10 +10,10 @@ class MethodChannelReceiptScanner extends ReceiptScannerPlatform {
   final methodChannel = const MethodChannel('receipt_scanner');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>(
-      'getPlatformVersion',
+  Future<double?> scanReceipt() async {
+    final amount = await methodChannel.invokeMethod<double>(
+      'scanReceipt',
     );
-    return version;
+    return amount;
   }
 }

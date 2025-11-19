@@ -11,7 +11,7 @@ void main() {
   setUp(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
-          return '42';
+          return 42.99;
         });
   });
 
@@ -20,7 +20,7 @@ void main() {
         .setMockMethodCallHandler(channel, null);
   });
 
-  test('getPlatformVersion', () async {
-    expect(await platform.getPlatformVersion(), '42');
+  test('scanReceipt', () async {
+    expect(await platform.scanReceipt(), 42.99);
   });
 }

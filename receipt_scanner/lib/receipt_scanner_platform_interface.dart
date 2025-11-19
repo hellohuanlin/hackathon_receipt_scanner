@@ -23,7 +23,7 @@ abstract class ReceiptScannerPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<double?> scanReceipt() {
+    throw UnimplementedError('scanReceipt() has not been implemented.');
   }
 }

@@ -14,11 +14,11 @@ import 'package:receipt_scanner/receipt_scanner.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('getPlatformVersion test', (WidgetTester tester) async {
+  testWidgets('scanReceipt test', (WidgetTester tester) async {
     final ReceiptScanner plugin = ReceiptScanner();
-    final String? version = await plugin.getPlatformVersion();
-    // The version string depends on the host platform running the test, so
-    // just assert that some non-empty string is returned.
-    expect(version?.isNotEmpty, true);
+    final double? amount = await plugin.scanReceipt();
+    // The amount should be a valid number (non-null and non-negative)
+    expect(amount, isNotNull);
+    expect(amount! >= 0, true);
   });
 }
