@@ -2,9 +2,9 @@
 fileprivate let image_compression_quality: CGFloat = 1
 
 enum ReceiptScanner {
-  static func scanAndDetectMoney(vc: UIViewController) async -> (UIImage, [TextRecognitionResult])? {
+  static func scanAndDetectMoney(navVC: UINavigationController) async -> (UIImage, [TextRecognitionResult])? {
     
-    let image: UIImage? = await DocumentScanUtil.scan(vc: vc, compressionQuality: image_compression_quality)
+    let image: UIImage? = await DocumentScanUtil.scan(navVC: navVC, compressionQuality: image_compression_quality)
     guard let image else { return nil }
     
     let results = await TextRecognitionUtil.recognizeText(image: image)
@@ -33,11 +33,5 @@ extension TextRecognitionResult {
       .union(.whitespacesAndNewlines)
       .union(.init(charactersIn: "$€£¥"))
     return Decimal(string: text.trimmingCharacters(in: nonNumbers))
-  }
-}
-
-extension Collection {
-  func anySatisfy(_ p: (Element) -> Bool) -> Bool {
-    return !self.allSatisfy { !p($0) }
   }
 }

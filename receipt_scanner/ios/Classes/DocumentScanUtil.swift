@@ -5,17 +5,18 @@ import AVFoundation
 @MainActor
 enum DocumentScanUtil {
   
-  static func scan(vc: UIViewController, compressionQuality: CGFloat) async -> UIImage? {
-    guard await PermissionUtil.requestCameraPermissionIfSupportedInInfoPlist(vc: vc) else {
-      return nil
+  static func scan(navVC: UINavigationController, compressionQuality: CGFloat) async -> UIImage? {
+    guard await PermissionUtil.requestCameraPermissionIfSupportedInInfoPlist(vc: navVC) else {
+      fatalError("You must enable camera permission")
     }
     return await withCheckedContinuation { continuation in
       let cameraVC = VNDocumentCameraViewController()
       let delegate = DocumentScanDelegate.shared
       delegate.compressionQuality = compressionQuality
       delegate.continuation = continuation
+      delegate.navVC = navVC
       cameraVC.delegate = delegate
-      vc.present(cameraVC, animated: true)
+      navVC.pushViewController(cameraVC, animated: true)
     }
   }
 }
@@ -27,10 +28,11 @@ fileprivate class DocumentScanDelegate: NSObject, VNDocumentCameraViewController
   
   var compressionQuality: CGFloat = 1
   var continuation: CheckedContinuation<UIImage?, Never>! = nil
+  var navVC: UINavigationController!
   
   func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
     Task { @MainActor in
-      controller.dismiss(animated: true)
+      navVC.popViewController(animated: true)
     }
     
     guard scan.pageCount >= 1 else { return }
@@ -43,24 +45,15 @@ fileprivate class DocumentScanDelegate: NSObject, VNDocumentCameraViewController
   
   func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
     Task { @MainActor in
-      controller.dismiss(animated: true)
+      navVC.popViewController(animated: true)
     }
     continuation.resume(returning: nil)
   }
   
   func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
     Task { @MainActor in
-      controller.dismiss(animated: true)
+      navVC.popViewController(animated: true)
     }
     continuation.resume(returning: nil)
-  }
-}
-
-public extension UIImage {
-  func compressed(quality: CGFloat) -> UIImage {
-    guard let data = jpegData(compressionQuality: quality),
-          let compressed = UIImage(data: data)
-    else { return self }
-    return compressed
   }
 }
